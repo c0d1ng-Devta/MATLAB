@@ -208,17 +208,17 @@ zlabel('km')
 %% Plotting the relative value of Deputy Sat-2 wrt to Leader Sat-1 in Hills frame.
 figure (7)
 subplot(2,1,1)
-plot(T1,r32h(:,1),'-k')
+plot(T1,r32h(1,:),'-k')
 hold on
-plot(T1,r32h(:,2),'-b')
-plot(T1,r32h(:,3),'-r')
+plot(T1,r32h(2,:),'-b')
+plot(T1,r32h(3,:),'-r')
 title('Distance')
 hold off
 
 subplot(2,1,2)
-plot(T1,v32h(:,1),'-y')
+plot(T1,v32h(1,:),'-y')
 hold on
-plot(T1,v32h(:,2),'-c')
-plot(T1,v32h(:,3),'-g')
+plot(T1,v32h(2,:),'-c')
+plot(T1,v32h(3,:),'-g')
 title('Velocity ')
 hold off
