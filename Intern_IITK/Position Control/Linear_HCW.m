@@ -1,47 +1,68 @@
 clc;
 clear;
+% close all;
 
+
+% Position Control of Chaser using HCW equations.
 % n=ureal('n',2*pi/(24*3600),'percent',2);%Data is of Geosynchronous Satellite
- n=2*pi/(24*3600);
+%% Constants and Data
+n=2*pi/(24*3600);
+t = 0:0.04:20;
 
-%%Position Control of Chaser using HCW equations.
-
-A=[0 0 0 1 0 0; 0 0 0 0 1 0;0 0 0 0 0 1;0 0 0 0 0 -2*n ; 0 -n*n 0 0 0 0;0 0 3*n*n 2*n 0 0];
-%A=[0 0 0 1 0 0; 0 0 0 0 1 0;0 0 0 0 0 1;3*n*n 0 0 0 2*n 0;0 0 0 -2*n 0 0;0
-%0 -n*n 0 0 0];%x and y in plane and z out of plan.
+%% A,B,C,D Matrices of State space model.
+% A=[0 0 0 1 0 0; 0 0 0 0 1 0;0 0 0 0 0 1;0 0 0 0 0 -2*n ; 0 -n*n 0 0 0 0;0 0 3*n*n 2*n 0 0];
+A=[0 0 0 1 0 0; 0 0 0 0 1 0;0 0 0 0 0 1;3*n*n 0 0 0 2*n 0;0 0 0 -2*n 0 0;0 0 -n*n 0 0 0];  %x and y in plane and z out of plan.
 B=[0 0 0; 0 0 0; 0 0 0;1 0 0; 0 1 0; 0 0 1];
 C_Nbar=[1 0 0 0 0 0 ;0 1 0 0 0 0; 0 0 1 0 0 0];
 C=eye(6);
 D=0;
 
-t = 0:0.04:20;
-u=[-100*ones(size(t));zeros(size(t));zeros(size(t))];
-init=[-500;0;-400;30;0;50];
+%% Reference State and Intial State.
+u=[-100*zeros(size(t));zeros(size(t));zeros(size(t))];
+init=[0;0;1000;0;-1;0];
 
 %ref=[-100;0;0;0;0;0];%First Hold Point.
 
+%% Applying LQR Algorithm to get best k for Full State Feedback.
 Q=0.1*(C'*C);
 R=eye(3);
-k=lqr(A,B,Q,R)
+k=lqr(A,B,Q,R);
 
+%% Creating State Space Model without State Feedback 
 State=ss(A,B,C,D,'InputName',{'ax','ay','az'},'OutputName'...
     ,{'y'},'StateName',{'x','y','z','x*','y*','z*'});
 
-% n=ureal('n',2*pi/(24*3600),'percent',2);
-% A=[0 0 0 1 0 0; 0 0 0 0 1 0;0 0 0 0 0 1;0 0 0 0 0 -2*n ; 0 -n*n 0 0 0 0;0 0 3*n*n 2*n 0 0];
-
-
+%% Creating State Space Model with Full State Feedback
  Nbar=-(inv(C_Nbar*inv(A-B*k)*B));
  State1=ss(A-B*k,B*Nbar,C,D,'InputName',{'ax','ay','az'},'OutputName'...
-    ,{'y'},'StateName',{'x','y','z','x*','y*','z*'})
-% lsim(State,u,t,init)
+    ,{'y'},'StateName',{'x','y','z','x*','y*','z*'});
 % opt=robOptions('Display','on','Sensitivity','on');
 % [StabilityMargin,wcu]=robstab(State1,opt);
-figure(2);
-lsim(State1,u,t,init);
+
+y1=lsim(State1,u,t,init);%Getting the Values from Linear Approximation.
+
 % set(findall(gcf,'type','line'),'linewidth',3);
+%% Plotting the linear Simulation 
 
+figure (9)
 
+subplot(2,1,1)
+plot(t,y1(:,1),'-k')
+hold on
+plot(t,y1(:,2),'-b')
+plot(t,y1(:,3),'-r')
+title('Distance')
+hold off
+
+subplot(2,1,2)
+plot(t,y1(:,4),'-y')
+hold on
+plot(t,y1(:,5),'-c')
+plot(t,y1(:,6),'-g')
+title('Velocity ')
+hold off
+
+%% Making Robust
 % %Weights
 % Wa1=ss(1);
 % Wa2=ss(2);

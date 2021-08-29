@@ -1,6 +1,6 @@
 clc;
 clear;
-close all;
+% close all;
 
 global mu m1 m2 m3 G ;
 
@@ -16,7 +16,7 @@ Vxo10=0;
 Vyo10=0;
 Vzo10=0;
 
-%% First Satellite
+%% First Satellite(Target Satellite )(Hill's Frame is Associated)
 m2 = 100;
 %Intial Position and Velocity 
 xo20=8000;
@@ -204,7 +204,6 @@ zlabel('km')
 %% Getting the relative value of Deputy(chaser) Sat-2 wrt to Leader(Target) Sat-1 in Hills frame.
 
 [r32h, v32h] = getHills(y2, y3);
-% plotvec(r32h', v32h')
 %% Plotting the relative value of Deputy Sat-2 wrt to Leader Sat-1 in Hills frame.
 figure (7)
 subplot(2,1,1)
@@ -222,3 +221,5 @@ plot(T1,v32h(2,:),'-c')
 plot(T1,v32h(3,:),'-g')
 title('Velocity ')
 hold off
+
+%%
