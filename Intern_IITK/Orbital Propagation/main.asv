@@ -2,7 +2,7 @@ clc;
 clear;
 % close all;
 
-global mu m1 m2 m3 G ax ay az;
+global mu m1 m2 m3 G ;
 
 
 %% Earth:
@@ -230,8 +230,8 @@ hold off
 
 %% Getting Relative Positions and W using Linearised HCW equations
 
-initial32=[Ro32'  Vo32']';% Intial State Vector of Chaser Sat wrt Target Sat
-L_HCW=Linear_HCW(initial32,t);
+intial=[Ro32'  Vo32']';% Intial State Vector of Chaser Sat wrt Target Sat
+L_HCW=Linear_HCW(intial,t);
 
 % Plotting the linear Simulation 
 figure (8)
@@ -258,23 +258,4 @@ ax=0;
 ay=0;
 az=0;
 
-[t5,NL_HCW]=rkf4(@Nonlinear_HCW,[t0,tf],initial32);
-
-% Plotting the linear Simulation 
-figure (9)
-
-subplot(2,1,1)
-plot(t,NL_HCW(:,1),'-k')
-hold on
-plot(t,NL_HCW(:,2),'-b')
-plot(t,NL_HCW(:,3),'-r')
-title('Distance')
-hold off
-
-subplot(2,1,2)
-plot(t,NL_HCW(:,4),'-y')
-hold on
-plot(t,NL_HCW(:,5),'-c')
-plot(t,NL_HCW(:,6),'-g')
-title('Velocity ')
-hold off
+NL_HCW=rkf4(@Nonlinear_HCW,[t0,tf],initial);

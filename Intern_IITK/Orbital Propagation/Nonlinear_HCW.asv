@@ -1,0 +1,22 @@
+function [df]=Nonlinear_HCW(~,f)
+global mu;
+
+x=f(1);
+y=f(2);
+z=f(3);
+Vx=f(4);
+Vy=f(5);
+Vz=f(6);
+
+r=norm([x y z]);
+Omega20=(mu/(r^3))^0.5;
+z=norm([r+x y z])
+
+ax=2*Omega20*Vy+()y+ (Omega20^2)*x+mu/(r^2)-mu*(r+x)/z^3;
+ay=-2*Omega20*Vx -()x +(Omega20^2)*y -mu*x 
+
+
+
+
+df = [Vx  Vy  Vz  ax  ay  az]'; 
+end

@@ -1,5 +1,6 @@
 function [r32h, v32h] = getHills(y2, y3)
-% 
+
+global Omega20;
 % s=length(y2);
 % r32h=zeros(s,3);
 % v32h=zeros(s,3);
@@ -13,7 +14,7 @@ function [r32h, v32h] = getHills(y2, y3)
 %         end
 %         Omega2o=2*pi/T;% w of planet-1 wrt to origin of interial frame.
         R20_mag=norm(R20);
-        Omega20=cross(R20,V20)/R20_mag;
+        Omega20=cross(R20,V20)/R20_mag^2;
 
         exh=R20/norm(R20);%h is used for hills frame.
         ezh=cross(R20,V20)/norm(cross(R20,V20));
