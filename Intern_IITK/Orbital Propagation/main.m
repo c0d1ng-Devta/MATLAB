@@ -278,3 +278,4 @@ plot(t,NL_HCW(:,5),'-c')
 plot(t,NL_HCW(:,6),'-g')
 title('Velocity ')
 hold off
+
