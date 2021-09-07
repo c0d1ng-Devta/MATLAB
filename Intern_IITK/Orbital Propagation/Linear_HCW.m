@@ -22,15 +22,15 @@ Vz=f(6);
 r=norm([x y z]);
 % Omega20=(mu/(r^3))^0.5;
 
-Omega20= cross([x y z],[Vx Vy Vz])/r^2;
+Omega20= norm (cross([x y z],[Vx Vy Vz])/r^2);
 % ax=2*Omega20*Vy+ 3*Omega20*Omega20*x;
 % ay=-2*Omega20*Vx;
 % az=-Omega20^2*z;
 
 A=[zeros(3), eye(3);
-   3*Omega20(1)^2 ,0, 0, 0, 2*Omega20(1), 0;
-   0 ,0 ,0 ,-2*Omega20(1) ,0 ,0 ;
-   0 ,0, -(Omega20(1)^2), 0, 0, 0 ];
+   3*Omega20^2 ,0, 0, 0, 2*Omega20, 0;
+   0 ,0 ,0 ,-2*Omega20 ,0 ,0 ;
+   0 ,0, -(Omega20^2), 0, 0, 0 ];
 
 dy = A*f;
 % dy = [Vx  Vy  Vz  ax  ay  az]'; 
