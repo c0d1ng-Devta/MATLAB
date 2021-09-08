@@ -162,34 +162,5 @@ subplot2([NL_HCW(:,1) NL_HCW(:,2) NL_HCW(:,3) NL_HCW(:,4) NL_HCW(:,5) NL_HCW(:,6
 Q=0.1*(eye(6));
 R=eye(3);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+[]=lqr_Nl_HCW(NL_HCW,t);
 

@@ -10,16 +10,16 @@ y = y0;
 tout = t;
 yout = y';
 while t < tf
-ti = t;
-yi = y;
+    ti = t;
+    yi = y;
 
 for i = 1:4
-t_inner = ti + a(i)*h;
-y_inner = yi;
-for j = 1:i-1
-y_inner = y_inner + h*b(i,j)*f(:,j);
-end
-f(:,i) = feval(ode_function, t_inner, y_inner);
+    t_inner = ti + a(i)*h;
+    y_inner = yi;
+    for j = 1:i-1
+        y_inner = y_inner + h*b(i,j)*f(:,j);
+    end
+    f(:,i) = feval(ode_function, t_inner, y_inner);
 end
 h = min(h, tf-t);
 t = t + h;
