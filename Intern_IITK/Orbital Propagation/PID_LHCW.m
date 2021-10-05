@@ -35,18 +35,14 @@ TF=tf(SSM);
 s=tf('s');
 C=Kp+Ki*(s^-(lambda)) + Kd*(s^(delta));
 init=[0;0;1000;0;-1;0];
-u=[-100*zeros(size(t));zeros(size(t));zeros(size(t))];
+u=[-100*ones(size(t')) zeros(size(t')) zeros(size(t'))];
+%u is INPUT signal u(t).It is not reference signal.
 
 %i=Input Number
 %j=Output Number
-for i=1:3
-    for j=1:6
-    System = feedback(C*TF(j,i),1);
-    y=lsim(System,u,t,init);
-    end
-    
-    
-end
+System = feedback(C.*TF,eye(3,6));
+y=lsim(System,u,t',init);
+
 end
 
 

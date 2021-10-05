@@ -39,7 +39,8 @@ State=ss(A,B,C,D,'InputName',{'ax','ay','az'},'OutputName'...
     ,{'y'},'StateName',{'x','y','z','x*','y*','z*'});
 % opt=robOptions('Display','on','Sensitivity','on');
 % [StabilityMargin,wcu]=robstab(State1,opt);
-
+figure(8)
+step(State1,t)
 y1=lsim(State1,u,t,init);%Getting the Values from Linear Approximation.
 
 % set(findall(gcf,'type','line'),'linewidth',3);
