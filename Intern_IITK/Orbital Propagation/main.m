@@ -1,3 +1,11 @@
+%%Notations Used Below.
+% 0- Origin(Earth Center)
+% 1- Earth
+% 2- Target Satellite
+% 3- Chaser Satellite
+% o- Intial
+
+
 clc;
 clear;
 % close all;
@@ -138,7 +146,7 @@ zlabel('km')
 
 figure(fig_no)%6
 fig_no=fig_no+1; 
-subplot2([r32h(1,:) r32h(2,:) r32h(3,:) v32h(1,:) v32h(2,:) v32h(3,:)],T1)
+subplot2([r32h(1,:)' r32h(2,:)' r32h(3,:)' v32h(1,:)' v32h(2,:)' v32h(3,:)'],T1)
 %% Getting Relative Positions and W using Linearised HCW equations
 
 initial32=[Ro32'  Vo32']';% Intial State Vector of Chaser Sat wrt Target Sat
@@ -158,9 +166,27 @@ subplot2([L_HCW(:,1) L_HCW(:,2) L_HCW(:,3) L_HCW(:,4) L_HCW(:,5) L_HCW(:,6)],t)
 figure(fig_no)%8
 fig_no=fig_no+1; 
 subplot2([NL_HCW(:,1) NL_HCW(:,2) NL_HCW(:,3) NL_HCW(:,4) NL_HCW(:,5) NL_HCW(:,6)],t)
-%% Applying Control Techniques to Non LInear LTV System.
+%% Applying Control Techniques to LInear LTV(w is varying)(HCW Equations) System.
 Q=0.1*(eye(6));
 R=eye(3);
 
-[]=lqr_Nl_HCW(NL_HCW,t);
+lqr_LHCW=lqr_L_HCW(L_HCW,t);
+
+figure(fig_no)%9
+fig_no=fig_no+1; 
+subplot2([lqr_LHCW(:,1) lqr_LHCW(:,2) lqr_LHCW(:,3) lqr_LHCW(:,4) lqr_LHCW(:,5) lqr_LHCW(:,6)],t)
+
+%% Applying PID control Technique to Linear LTV(w is varying )(HCW equations ) System.
+Kp=4342;
+Ki=434;
+Kd=4324;
+lambda =1;
+delta =1;
+param_FPID=[Kp,Ki,Kd,lambda,delta];
+
+
+pid_LHCW=PID_LHCW(L_HCW,t,param_FPID);
+
+
+
 
