@@ -49,8 +49,9 @@ Vo32=[Vxo30-Vxo20 Vyo30-Vyo20 Vzo30-Vzo20]';
 %% Time and Other Constants 
 hours =3600;
 t0 = 0;
-tf = 5*hours;
-t= t0:5:tf;
+tf = 1*hours;
+st=.5;
+t= t0:st:tf;
 mu = G*(m1 + m2);
 
 fig_no=1;% To keep count of Figures
@@ -59,10 +60,10 @@ fig_no=1;% To keep count of Figures
 %Considering Two Body System making each satellite Independent of Each
 %Other.
 p20=[xo20; yo20; zo20; Vxo20; Vyo20; Vzo20];
-[T2,y2] = rkf4(@twobody,[t0,tf], p20);
+[T2,y2] = rkf4(@twobody,[t0,tf], p20 ,st);
 
 p30=[xo30; yo30; zo30; Vxo30; Vyo30; Vzo30];
-[T3,y3] = rkf4(@twobody,[t0,tf], p30);
+[T3,y3] = rkf4(@twobody,[t0,tf], p30,st);
 
 % figure(fig_no)
 % fig_no=fig_no+1;
@@ -71,7 +72,7 @@ p30=[xo30; yo30; zo30; Vxo30; Vyo30; Vzo30];
 %Considering Three Body System
 y00 = [xo10 yo10 zo10 xo20 yo20 zo20 xo30 yo30 zo30 Vxo10 Vyo10 Vzo10 Vxo20 ...
       Vyo20 Vzo20 Vxo30 Vyo30 Vzo30]';
-[T1,y1] = rkf4(@threebody,[t0,tf], y00);
+[T1,y1] = rkf4(@threebody,[t0,tf], y00,st);
 %% Planet Earth Position and Velocity
 % plots Position and Velocity components of Planet-Earth wrt to fixed Interial
 % Frame of Reference at space (Approx to Earth Center).
@@ -158,7 +159,7 @@ fig_no=fig_no+1;
 subplot2([L_HCW(:,1) L_HCW(:,2) L_HCW(:,3) L_HCW(:,4) L_HCW(:,5) L_HCW(:,6)],t)
 %% Getting Relative Positions and W using Non Linear Non Pertubated HCW equations
 
-[~,NL_HCW]=rkf4(@Nonlinear_HCW,[t0,tf],initial32);
+[~,NL_HCW]=rkf4(@Nonlinear_HCW,[t0,tf],initial32,st);
 
 % In place of Nonlinear_HCW function nonlinear_HCW_matrix_diff_equ can be
 % used.
@@ -170,23 +171,21 @@ subplot2([NL_HCW(:,1) NL_HCW(:,2) NL_HCW(:,3) NL_HCW(:,4) NL_HCW(:,5) NL_HCW(:,6
 Q=0.1*(eye(6));
 R=eye(3);
 
-lqr_LHCW=lqr_L_HCW(L_HCW,t);
+lqr_LHCW=lqr_L_HCW(initial32,t);
 
 figure(fig_no)%9
 fig_no=fig_no+1; 
 subplot2([lqr_LHCW(:,1) lqr_LHCW(:,2) lqr_LHCW(:,3) lqr_LHCW(:,4) lqr_LHCW(:,5) lqr_LHCW(:,6)],t)
-
-%% Applying PID control Technique to Linear LTV(w is varying )(HCW equations ) System.
-Kp=4342;
-Ki=434;
-Kd=4324;
+%% Applying FPID control Technique to Linear LTV(w is varying )(HCW equations ) System.
+Kp=2;
+Ki=4;
+Kd=4;
 lambda =1;
 delta =1;
+
 param_FPID=[Kp,Ki,Kd,lambda,delta];
+pid_LHCW=PID_LHCW(initial32,t,param_FPID);
 
-
-pid_LHCW=PID_LHCW(L_HCW,t,param_FPID);
-
-
-
-
+figure(fig_no)%10
+fig_no=fig_no+1; 
+subplot2([pid_LHCW(:,1) pid_LHCW(:,2) pid_LHCW(:,3) pid_LHCW(:,4) pid_LHCW(:,5) pid_LHCW(:,6)],t)

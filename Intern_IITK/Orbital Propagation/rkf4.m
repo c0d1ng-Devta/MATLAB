@@ -1,5 +1,5 @@
-function [tout, yout] = rkf4(ode_function, tspan, y0)
-h=5;
+function [tout, yout] = rkf4(ode_function, tspan, y0,sample_time)
+h=sample_time;
 a= [0 1/2 1/2 1];
 b = [0 0 0;1/2 0 0;0 1/2 0;0 0 1];
 c = [1/6 1/3 1/3 1/6];

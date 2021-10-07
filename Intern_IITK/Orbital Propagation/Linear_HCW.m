@@ -5,7 +5,7 @@ function L_HCW =Linear_HCW(init,t)
 
 %% Implementing Time Varying Angular Velocity System.
 
-[~,y4] = rkf4(@HCW_eq,[t(1),t(end)],init);
+[~,y4] = rkf4(@HCW_eq,[t(1),t(end)],init,t(2)-t(1));
 L_HCW=y4;
 
 end
