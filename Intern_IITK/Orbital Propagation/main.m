@@ -5,7 +5,6 @@
 % 3- Chaser Satellite
 % o- Intial
 
-
 clc;
 clear;
 % close all;
@@ -54,6 +53,7 @@ st=.5;
 t= t0:st:tf;
 mu = G*(m1 + m2);
 
+r_tol=1e-17;%Tolerence value for Minimum distance between T and C.
 fig_no=1;% To keep count of Figures
 %% Calculating Orbital State Vector wrt time using Runge Kutta Method of Order-4.
 
@@ -171,20 +171,20 @@ subplot2([NL_HCW(:,1) NL_HCW(:,2) NL_HCW(:,3) NL_HCW(:,4) NL_HCW(:,5) NL_HCW(:,6
 Q=0.1*(eye(6));
 R=eye(3);
 
-lqr_LHCW=lqr_L_HCW(initial32,t);
+lqr_LHCW=lqr_L_HCW(initial32,t,r_tol);
 
 figure(fig_no)%9
 fig_no=fig_no+1; 
 subplot2([lqr_LHCW(:,1) lqr_LHCW(:,2) lqr_LHCW(:,3) lqr_LHCW(:,4) lqr_LHCW(:,5) lqr_LHCW(:,6)],t)
 %% Applying FPID control Technique to Linear LTV(w is varying )(HCW equations ) System.
-Kp=2;
-Ki=4;
-Kd=4;
-lambda =1;
-delta =1;
+% Kp=2;
+% Ki=4;
+% Kd=4;
+% lambda =1;
+% delta =1;
 
 param_FPID=[Kp,Ki,Kd,lambda,delta];
-pid_LHCW=PID_LHCW(initial32,t,param_FPID);
+pid_LHCW=PID_LHCW(initial32,t,r_tol);
 
 figure(fig_no)%10
 fig_no=fig_no+1; 
