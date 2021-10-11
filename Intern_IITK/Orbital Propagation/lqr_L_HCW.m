@@ -1,4 +1,4 @@
-function [lqr_LHCW]=lqr_L_HCW(initial,t)
+function [lqr_LHCW]=lqr_L_HCW(initial,t,r_tol)
 Q=0.1*(eye(6));
 R=eye(3);
 
@@ -16,7 +16,7 @@ Vz=init(6);
 r=norm([x y z]);
 % Omega20=(mu/(r^3))^0.5;
 
-if r<=0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001
+if r<=r_tol
 Omega20=0;
 else
 Omega20= norm (cross([x y z],[Vx Vy Vz])/r^2);
