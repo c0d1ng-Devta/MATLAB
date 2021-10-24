@@ -1,11 +1,11 @@
-function [pid_LHCW]=PID_LHCW(initial,t,r_tol)
+function [pid_LHCW]=PID_LHCW(initial,t,r_tol,param_FPID)
 pid_LHCW=zeros(length(t),6);
-
+Kp=param_FPID(1);
+Ki=param_FPID(2);
+Kd=param_FPID(3);
+lambda=param_FPID(4);
+delta=param_FPID(5);
 init=initial;
-y_um=zeros(6,3,length(t));
-y_u=zeros(6,length(t));
-
-
 
 for i = (1:length(t))
 x=init(1);
@@ -33,28 +33,20 @@ B=[0 0 0; 0 0 0; 0 0 0;1 0 0; 0 1 0; 0 0 1];
 C=eye(6);
 D=0;
 
+SSM=ss(A,B,C,D);
+TF=tf(SSM);
+
+s=tf('s');
+C=Kp+Ki*(s^-(lambda)) + Kd*(s^(delta));
 u=[-100*ones(size(t')) zeros(size(t')) zeros(size(t'))];
 %u is INPUT signal u(t).It is not reference signal.
 
-SSM=ss(A,B,C,D);
-TF=tf(SSM);                      %TF(output,input)
+%i=Input Number
+%j=Output Number
+System = feedback(C.*TF,eye(3,6));
+y=lsim(System,u,t',init);
 
-% s=tf('s');
-%C=Kp+Ki*(s^-(lambda)) + Kd*(s^(delta));
-for j =1:6
-    for k= 1:3
-C_pid=pidtune(TF(j,k),'PID');
-%k=Input Number
-%j=Output State Number
-System = feedback(C_pid*TF(j,k),1);
-y_um(j,k,:)=lsim(System,u(:,k),t',init(j));
-    end 
-y_u=sum(y_um,2);
-end
-
-pid_LHCW(i,:)=[y_u(1,1,i),y_u(2,1,i),y_u(3,1,i),y_u(4,1,i),y_u(5,1,i),y_u(6,1,i)];
+pid_LHCW(i,:)=[y(i,1),y(i,2),y(i,3),y(i,4),y(i,5),y(i,6)];
 init=pid_LHCW(i,:)';
-fprintf("%d\n",i);
 end
-
 
