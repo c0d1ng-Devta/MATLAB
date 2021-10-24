@@ -3,6 +3,7 @@ Q=0.1*(eye(6));
 R=eye(3);
 
 init=initial;
+svt=init;
 lqr_LHCW=zeros(length(t),6);
 
 for i = (1:length(t))
@@ -16,7 +17,7 @@ Vz=init(6);
 r=norm([x y z]);
 % Omega20=(mu/(r^3))^0.5;
 
-if r<=r_tol
+if r>=1e+100
 Omega20=0;
 else
 Omega20= norm (cross([x y z],[Vx Vy Vz])/r^2);
@@ -33,18 +34,23 @@ C=eye(6);
 D=0;
 
 k=lqr(A,B,Q,R);
-Nbar=-(inv(C_Nbar*((A-B*k)\B)));
-State=ss(A-B*k,B*Nbar,C,D,'InputName',{'ax','ay','az'},'OutputName'...
-    ,{'y'},'StateName',{'x','y','z','x*','y*','z*'});
+% Nbar=-(inv(C_Nbar*((A-B*k)\B)));
+% State=ss(A-B*k,B*Nbar,C,D,'InputName',{'ax','ay','az'},'OutputName'...
+%     ,{'y'},'StateName',{'x','y','z','x*','y*','z*'});
 
-u=[-100*zeros(size(t));zeros(size(t));zeros(size(t))];
-init=[0;0;1000;0;-1;0];
+ref=[-100;0;0;0;0;0];
+% u=[-100*ones(size(t')) zeros(size(t')) zeros(size(t'))];
+% init=[0;0;1000;0;-1;0];
 
+% y1=lsim(State,u,t,init);
 
-y1=lsim(State,u,t,init);
+svt=A*svt -B*k*(svt-ref);
+y1=C*[x;y;z;Vx;Vy;Vz];
 
-lqr_LHCW(i,:)=[y1(i,1) y1(i,2) y1(i,3) y1(i,4) y1(i,5) y1(i,6)];
-init=lqr_LHCW(i,:)';
+lqr_LHCW(i,:)=[y1(1) y1(2) y1(3) y1(4) y1(5) y1(6)];
+% lqr_LHCW(i,:)=[y1(i,1) y1(i,2) y1(i,3) y1(i,4) y1(i,5) y1(i,6)];
+% init=lqr_LHCW(i,:)';
+init =svt;
 
 end
 
