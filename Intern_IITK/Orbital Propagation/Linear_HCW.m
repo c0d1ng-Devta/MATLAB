@@ -11,7 +11,6 @@ L_HCW=y4;
 end
 
 function dy= HCW_eq(~,f)
-global mu;
 x=f(1);
 y=f(2);
 z=f(3);

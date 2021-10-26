@@ -15,14 +15,16 @@ Vx=init(4);
 Vy=init(5);
 Vz=init(6);
 
-r=norm([x y z]);
+x20=y2(i,1);
+y20=y2(i,2);
+z20=y2(i,3);
+Vx20=y2(i,4);
+Vy20=y2(i,5);
+Vz20=y2(i,6);
+r=norm([x20 y20 z20]);
 % Omega20=(mu/(r^3))^0.5;
 
-if r<=r_tol
-Omega20=0;
-else
-Omega20= norm (cross([x y z],[Vx Vy Vz])/r^2);
-end
+Omega20= norm (cross([x20 y20 z20],[Vx20 Vy20 Vz20])/r^2);
 
 A=[zeros(3), eye(3);
    3*Omega20^2 ,0, 0, 0, 2*Omega20, 0;

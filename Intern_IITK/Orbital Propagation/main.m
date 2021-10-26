@@ -9,7 +9,7 @@ clc;
 clear;
 % close all;
 
-global mu m1 m2 m3 G ;
+global mu m1 m2 m3 G y2 ;
 %% Earth:
 m1 = 5.974e24;
 Re = 6378;
@@ -171,31 +171,31 @@ subplot2([NL_HCW(:,1) NL_HCW(:,2) NL_HCW(:,3) NL_HCW(:,4) NL_HCW(:,5) NL_HCW(:,6
 Q=0.1*(eye(6));
 R=eye(3);
 
-lqr_LHCW=lqr_L_HCW(initial32,t,r_tol);
+lqr_LHCW=lqr_L_HCW(initial32,t,r_tol,y2);
 
 figure(fig_no)%9
 fig_no=fig_no+1; 
 subplot2([lqr_LHCW(:,1) lqr_LHCW(:,2) lqr_LHCW(:,3) lqr_LHCW(:,4) lqr_LHCW(:,5) lqr_LHCW(:,6)],t)
-% %% Applying PID Using Autotuning control Technique to Linear LTV(w is varying )(HCW equations) System.
-% % Kp=2;
-% % Ki=4;
-% % Kd=4;
-% % lambda =1;
-% % delta =1;B=[0 0 0; 0 0 0; 0 0 0;1 0 0; 0 1 0; 0 0 1];
-% 
-% % param_FPID=[Kp,Ki,Kd,lambda,delta];
-% pid_LHCW_pidtune=PID_LHCW_PIDTUNE(initial32,t,r_tol);
-% 
-% figure(fig_no)%10
-% fig_no=fig_no+1; 
-% subplot2([pid_LHCW_pidtune(:,1) pid_LHCW_pidtune(:,2) pid_LHCW_pidtune(:,3) pid_LHCW_pidtune(:,4) pid_LHCW_pidtune(:,5) pid_LHCW_pidtune(:,6)],t)
-% %% Applying PID control Technique to Linear LTV(w is varying )(HCW equations) System.
+%% Applying PID Using Autotuning control Technique to Linear LTV(w is varying )(HCW equations) System.
 % Kp=2;
 % Ki=4;
 % Kd=4;
 % lambda =1;
-% delta =1;
-% 
-% param_pid=[Kp,Ki,Kd,lambda,delta];
-% 
-% pid_LHCW=PID_LHCW(initial32,t,r_tol,param_pid);
+% delta =1;B=[0 0 0; 0 0 0; 0 0 0;1 0 0; 0 1 0; 0 0 1];
+
+% param_FPID=[Kp,Ki,Kd,lambda,delta];
+pid_LHCW_pidtune=PID_LHCW_PIDTUNE(initial32,t,r_tol);
+
+figure(fig_no)%10
+fig_no=fig_no+1; 
+subplot2([pid_LHCW_pidtune(:,1) pid_LHCW_pidtune(:,2) pid_LHCW_pidtune(:,3) pid_LHCW_pidtune(:,4) pid_LHCW_pidtune(:,5) pid_LHCW_pidtune(:,6)],t)
+%% Applying PID control Technique to Linear LTV(w is varying )(HCW equations) System.
+Kp=2;
+Ki=4;
+Kd=4;
+lambda =1;
+delta =1;
+
+param_pid=[Kp,Ki,Kd,lambda,delta];
+
+pid_LHCW=PID_LHCW(initial32,t,r_tol,param_pid);
