@@ -1,4 +1,4 @@
-clear, clc
+function [x,t]=lqr_lhcw_const_N(x0,tspan)
 
 n=2*pi/(24*3600);%Data is of Geosynchronous Satellite
 m=6000;
@@ -24,17 +24,15 @@ R = eye(3);
 K = lqr(A,B,Q,R);
 
 %% Simulate closed-loop system
-tspan = 0:.01:8;
-x0 = [-1000;-200;-4000;30;40;50];   % initial condition 
+% x0 = [-1000;-200;-4000;30;40;50];   % initial condition 
 xdes = [0; -100; 0; 0; 0; 0];       % reference position
 u=@(x)-K*(x - xdes);                % control law
 
 [t,x] = ode45(@(t,x)diff_equ(x,u(x),n),tspan,x0);
 
-desired = repmat(xdes',length(t),1);
-x = x';
-desired = desired';
-subplot2(x',t');
+% desired = repmat(xdes',length(t),1);
+% desired = desired';
+% subplot2(x,t');
 % figure(1)
 % subplot(3,2,1)
 % plot(tspan,x(1,:),tspan,desired(1,:))
