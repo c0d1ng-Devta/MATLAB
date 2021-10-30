@@ -44,14 +44,15 @@ Vzo30=0;
 
 Ro30=[xo30 yo30 zo30]';
 %% Intial Difference Between Satellites
-
 Ro32=[xo30-xo20 yo30-yo20 zo30-zo20]';
 Vo32=[Vxo30-Vxo20 Vyo30-Vyo20 Vzo30-Vzo20]';
+initial32=[Ro32'  Vo32']';% Intial State Vector of Chaser Sat wrt Target Sat
+ref=[0,-100,0,0,0,0];   % Desired Value of State Vectors or Output till C =eye(6);
 %% Time and Other Constants 
 hours =3600;
 t0 = 0;
-tf = 1*hours;
-st=.25;
+tf = 24*hours;
+st=5;
 t= t0:st:tf;
 mu = G*(m1 + m2);
 
@@ -117,16 +118,15 @@ fig_no=fig_no+1;
 subplot2([r32h(1,:)' r32h(2,:)' r32h(3,:)' v32h(1,:)' v32h(2,:)' v32h(3,:)'],T1)
 %% Getting Relative Positions and W using Linearised HCW equations
 
-initial32=[Ro32'  Vo32']';% Intial State Vector of Chaser Sat wrt Target Sat
-L_HCW=Linear_HCW(initial32,t);
+[L_HCW,tt]=Linear_HCW(initial32,t,y2);
 
 % Plotting the linear Simulation 
 figure(fig_no)%7
 fig_no=fig_no+1; 
-subplot2([L_HCW(:,1) L_HCW(:,2) L_HCW(:,3) L_HCW(:,4) L_HCW(:,5) L_HCW(:,6)],t)
+subplot2([L_HCW(:,1) L_HCW(:,2) L_HCW(:,3) L_HCW(:,4) L_HCW(:,5) L_HCW(:,6)],tt)
 %% Getting Relative Positions and W using Non Linear Non Pertubated HCW equations
 
-[~,NL_HCW]=rkf4(@Nonlinear_HCW,[t0,t(end)],initial32,st);
+[~,NL_HCW]=rkf4(@(ti,y)Nonlinear_HCW(ti,y2,t),[t0,t(end)],initial32,st);
 
 % In place of Nonlinear_HCW function nonlinear_HCW_matrix_diff_equ can be
 % used.
@@ -141,9 +141,9 @@ figure(fig_no)%9
 fig_no=fig_no+1; 
 subplot2(lqr_LHCW_n,t_lqr_nLHCW');
 
-figure(fig_no)%9
-fig_no=fig_no+1; 
-Earthplot([y1(:,4), y1(:,5), y1(:,6)],Ro20,[lqr_LHCW_n(1,:),lqr_LHCW_n(2,:),lqr_LHCW_n(3,:)],Ro30);
+% figure(fig_no)%9
+% fig_no=fig_no+1; 
+% Earthplot([y1(:,4), y1(:,5), y1(:,6)],Ro20,[lqr_LHCW_n(1,:),lqr_LHCW_n(2,:),lqr_LHCW_n(3,:)],Ro30);
 %% Applying Control Techniques to LInear LTV(w is varying)(HCW Equations) System.
 Q=0.1*(eye(6));
 R=eye(3);

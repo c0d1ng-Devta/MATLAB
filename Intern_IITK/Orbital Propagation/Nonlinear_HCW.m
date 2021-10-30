@@ -1,6 +1,6 @@
-function [df]=Nonlinear_HCW(~,f)
+function [df]=Nonlinear_HCW(ti,f,tspan)
 global mu ;
-
+f=interp1(tspan,f,ti);
 x=f(1);
 y=f(2);
 z=f(3);
@@ -34,7 +34,7 @@ A = [zeros(3)                ,               eye(3);...
          0;
          0];
 
-df = A*f + B;
+df = A*f' + B;
 
 % df = [Vx  Vy  Vz  ax  ay  az]'; 
 end

@@ -1,22 +1,23 @@
-function L_HCW =Linear_HCW(init,t)
+function[y4,t] =Linear_HCW(init,tspan,y2)
 % Position Control of Chaser using Linearized HCW equations.
 % Here w will be Changing for every time stamp so will implement it like
 % Non Linear Model.
 
 %% Implementing Time Varying Angular Velocity System.
 
-[~,y4] = rkf4(@HCW_eq,[t(1),t(end)],init,t(2)-t(1));
-L_HCW=y4;
+[t,y4] = rkf4(@(t,y)HCW_eq(t,y2,tspan),[tspan(1),tspan(end)],init,tspan(2)-tspan(1));
 
 end
 
-function dy= HCW_eq(~,f)
+function dydt= HCW_eq(t,f,tspan)
+f=interp1(tspan,f,t);
 x=f(1);
 y=f(2);
 z=f(3);
 Vx=f(4);
 Vy=f(5);
 Vz=f(6);
+size(f);
 
 r=norm([x y z]);
 % Omega20=(mu/(r^3))^0.5;
@@ -31,6 +32,6 @@ A=[zeros(3), eye(3);
    0 ,0 ,0 ,-2*Omega20 ,0 ,0 ;
    0 ,0, -(Omega20^2), 0, 0, 0 ];
 
-dy = A*f;
+dydt = A*f';
 % dy = [Vx  Vy  Vz  ax  ay  az]'; 
 end
