@@ -1,4 +1,4 @@
-function [pid_LHCW]=PID_LHCW(initial,t,r_tol,param_FPID)
+function [pid_LHCW]=PID_LHCW(initial,t,y2,param_FPID)
 pid_LHCW=zeros(length(t),6);
 Kp=param_FPID(1);
 Ki=param_FPID(2);

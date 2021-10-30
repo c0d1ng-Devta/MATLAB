@@ -1,4 +1,4 @@
-function [lqr_LHCW]=lqr_L_HCW(initial,t,r_tol,y2)
+function [lqr_LHCW]=lqr_L_HCW(initial,t,y2)
 Q=0.1*(eye(6));
 R=eye(3);
 
@@ -31,9 +31,9 @@ A=[zeros(3), eye(3);
    0 ,0 ,0 ,-2*Omega20 ,0 ,0 ;
    0 ,0, -(Omega20^2), 0, 0, 0 ];
 B=[0 0 0; 0 0 0; 0 0 0;1 0 0; 0 1 0; 0 0 1];
-C_Nbar=[1 0 0 0 0 0 ;0 1 0 0 0 0; 0 0 1 0 0 0];
+% C_Nbar=[1 0 0 0 0 0 ;0 1 0 0 0 0; 0 0 1 0 0 0];
 C=eye(6);
-D=0;
+% D=0;
 
 k=lqr(A,B,Q,R);
 % Nbar=-(inv(C_Nbar*((A-B*k)\B)));
