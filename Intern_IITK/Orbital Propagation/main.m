@@ -1,4 +1,4 @@
-%%Notations Used Below.
+%% Notations Used Below.
 % 0- Origin(Earth Center)
 % 1- Earth
 % 2- Target Satellite
@@ -23,11 +23,14 @@ Vzo10=0;
 %% First Satellite(Target Satellite )(Hill's Frame is Associated)
 m2 = 100;
 %Intial Position and Velocity 
-xo20=8000;
+%Data Taken of Geo Synchronous Satellite 
+%r=42164 km from center
+%speed=3.07km/hr
+xo20=29814.45;%8000
 yo20=0;
-zo20=6000;
+zo20=29814.45;%6000
 Vxo20=0;
-Vyo20=7;
+Vyo20=3.07;%7
 Vzo20=0;
 
 Ro20=[xo20 yo20 zo20]';
@@ -148,7 +151,7 @@ subplot2(lqr_LHCW_n,t_lqr_nLHCW');
 Q=0.1*(eye(6));
 R=eye(3);
 
-lqr_LHCW=lqr_L_HCW(initial32,t,y2);
+lqr_LHCW=lqr_L_HCW(initial32,t,y2,ref);
 
 figure(fig_no)%10
 fig_no=fig_no+1; 
