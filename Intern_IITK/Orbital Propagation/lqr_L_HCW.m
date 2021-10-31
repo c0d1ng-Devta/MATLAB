@@ -1,4 +1,4 @@
-function [lqr_LHCW]=lqr_L_HCW(initial,t,y2)
+function [lqr_LHCW]=lqr_L_HCW(initial,t,y2,ref)
 Q=0.1*(eye(6));
 R=eye(3);
 
@@ -40,7 +40,7 @@ k=lqr(A,B,Q,R);
 % State=ss(A-B*k,B*Nbar,C,D,'InputName',{'ax','ay','az'},'OutputName'...
 %     ,{'y'},'StateName',{'x','y','z','x*','y*','z*'});
 
-ref=[-100;0;0;0;0;0];
+%ref=[-100;0;0;0;0;0];
 % u=[-100*ones(size(t')) zeros(size(t')) zeros(size(t'))];
 % init=[0;0;1000;0;-1;0];
 
