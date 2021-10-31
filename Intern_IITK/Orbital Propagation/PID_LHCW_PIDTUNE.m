@@ -2,14 +2,11 @@ function [pid_LHCW]=PID_LHCW_PIDTUNE(initial,t,y2)
 %Used pidtune Function to Find best Possible Parameters for Individual TF
 %of Transfer Matrix.
 
-
 pid_LHCW=zeros(length(t),6);
 
 init=initial;
 y_um=zeros(6,3,length(t));
 y_u=zeros(6,length(t));
-
-
 
 for i = (1:length(t))
 % x=init(1);

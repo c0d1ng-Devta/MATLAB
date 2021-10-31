@@ -22,9 +22,10 @@ zo10=i1(3);
 % and label the starting point (o) and the final point (f) for Planet-1
 hold on
 plot3( y1(:,1), y1(:,2), y1(:,3),'k')
-line([0 xo10], [0 yo10], [0 zo10])
+line([0 xo10], [0 yo10], [0 zo10],'LineStyle','--')
 text( y1(1,1), y1(1,2), y1(1,3), 'o')
 text( y1(end,1), y1(end,2), y1(end,3), 'f')
+line([0 y1(end,1)],[0 y1(end,2)],[0 y1(end,3)],'Color','red','LineStyle','--')
 % Select a view direction (a vector directed outward from the origin)
 view([1,1,.4])
 hold off
@@ -39,9 +40,10 @@ zo20=i2(3);
 % and label the starting point (o) and the final point (f) for Planet-1
 hold on
 plot3( y1(:,1), y1(:,2), y1(:,3),'k')
-line([0 xo10], [0 yo10], [0 zo10])
+line([0 xo10], [0 yo10], [0 zo10],'LineStyle','--')
 text( y1(1,1), y1(1,2), y1(1,3), 'o')
 text( y1(end,1), y1(end,2), y1(end,3), 'f')
+line([0 y1(end,1)],[0 y1(end,2)],[0 y1(end,3)],'Color','red','LineStyle','--')
 % Select a view direction (a vector directed outward from the origin)
 view([1,1,.4])
 % Plot the orbit, draw a radial to the starting point
@@ -49,7 +51,8 @@ view([1,1,.4])
 plot3( y2(:,1), y2(:,2), y2(:,3),'k')
 line([0 xo20], [0 yo20], [0 zo20])
 text(y2(1,1), y2(1,2), y2(1,3), 'o')
-text( y2(end,1), y1(end,2), y1(end,3), 'f')
+text( y2(end,1), y2(end,2), y2(end,3), 'f')
+line([0 y2(end,1)],[0 y2(end,2)],[0 y2(end,3)],'Color','red')
 hold off
 end
 
