@@ -1,5 +1,6 @@
 # Editor autosave files
 *~
 *.asv
+*.fig
 # Compiled MEX binaries (all platforms)
 *.mex*
