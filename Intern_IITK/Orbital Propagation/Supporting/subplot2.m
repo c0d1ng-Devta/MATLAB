@@ -1,5 +1,6 @@
 function subplot2(y,T)
 
+hold off
 subplot(2,1,1)
 
 plot(T,y(:,1),'-k')

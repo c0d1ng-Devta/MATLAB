@@ -1,4 +1,4 @@
-function [pid_LHCW]=PID_LHCW(initial,t,y2,param_FPID)
+function [pid_LHCW]=PID_LHCW(initial,t,y2,param_FPID,ref)
 pid_LHCW=zeros(length(t),6);
 Kp=param_FPID(1);
 Ki=param_FPID(2);
@@ -40,15 +40,18 @@ TF=tf(SSM);
 
 s=tf('s');
 C=Kp+Ki*(s^-(lambda)) + Kd*(s^(delta));
-u=[-100*ones(size(t')) zeros(size(t')) zeros(size(t'))];
+% u=[-100*ones(size(t')) zeros(size(t')) zeros(size(t'))];
 %u is INPUT signal u(t).It is not reference signal.
 
 %i=Input Number
 %j=Output Number
 System = feedback(C.*TF,eye(3,6));
-y=lsim(System,u,t',init);
+% y=lsim(System,u,t',init);
+SSM_new=ss(System);
+init=SSM_new.A*init' + SSM_new.B*(ref-init)';
+y=SSM_new.C*[x;y;z;Vx;Vy;Vz];
 
 pid_LHCW(i,:)=[y(i,1),y(i,2),y(i,3),y(i,4),y(i,5),y(i,6)];
-init=pid_LHCW(i,:)';
+% init=pid_LHCW(i,:)';
 end
 
