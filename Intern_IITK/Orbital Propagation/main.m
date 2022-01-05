@@ -6,9 +6,12 @@
 % o- Intial
 % C- 3D transformation Matrix from ECI frame to Hills frame at each time
 % instant.
+% State Vector [6 x].
+%Time Vector [1 x]
 
 clc;
 clear;
+warning off;
 % close all;
 
 global mu m1 m2 m3 G Re ;
@@ -44,7 +47,7 @@ xo30=28000;
 yo30=0;
 zo30=28000;
 Vxo30=0;
-Vyo30=3.01;
+Vyo30=3.30;
 Vzo30=0;
 
 Ro30=[xo30 yo30 zo30]';
@@ -73,37 +76,13 @@ fig_no=1;% To keep count of Figures
 %Other.
 p20=[xo20; yo20; zo20; Vxo20; Vyo20; Vzo20];
 [T2,y2] = rkf4(@twobody,[t0,tf], p20 ,step_time);
-
 p30=[xo30; yo30; zo30; Vxo30; Vyo30; Vzo30];
 [T3,y3] = rkf4(@twobody,[t0,tf], p30,step_time);
-
-% figure(fig_no)
-% fig_no=fig_no+1;
-% subplot2([y2(:,1) y2(:,2) y2(:,3) y2(:,4) y2(:,5) y2(:,6)],T2)
-
+%{
 %Considering Three Body System
 y00 = [xo10 yo10 zo10 xo20 yo20 zo20 xo30 yo30 zo30 Vxo10 Vyo10 Vzo10 Vxo20 ...
       Vyo20 Vzo20 Vxo30 Vyo30 Vzo30]';
 [T1,y1] = rkf4(@threebody,[t0,tf], y00,step_time);
-%{
-%% Planet Earth Position and Velocity
-% plots Position and Velocity components of Planet-Earth wrt to fixed Interial
-% Frame of Reference at space (Approx to Earth Center).
-figure(fig_no)%1
-fig_no=fig_no+1;
-subplot2([y1(:,1) y1(:,2) y1(:,3) y1(:,10) y1(:,11) y1(:,12)],T1)
-%% Planet-1 Position and Velocity
-% plots Position and Velocity components of Planet-1 wrt to fixed Interial
-% Frame of Reference at space (Approx to Earth Center).
-figure(fig_no)%2
-fig_no=fig_no+1;
-subplot2([y1(:,4) y1(:,5) y1(:,6) y1(:,13) y1(:,14) y1(:,15)],T1)
-%% Planet-2 Position and Velocity
-% plots Position and Velocity components of Planet 2 wrt to fixed Interial
-% Frame of Reference at space (Approx to Earth Center).
-figure(fig_no)%3
-fig_no=fig_no+1;
-subplot2([y1(:,7) y1(:,8) y1(:,9) y1(:,16) y1(:,17) y1(:,18)],T1)
 %% Difference of Planet-1 and Planet-2 Position and Velocity
 % plots Position and Velocity components of Planet 2 wrt to Planet 1 wrt to
 % Interial Frame of Reference at Space .
@@ -117,49 +96,51 @@ subplot2([y1(:,4)-y1(:,7) y1(:,5)-y1(:,8) y1(:,6)-y1(:,9) ...
 
 figure(fig_no)%1
 fig_no=fig_no+1;
-Earthplot([y2(:,1), y2(:,2), y2(:,3)],Ro20,[y1(:,7),y1(:,8),y1(:,9)],Ro30);
+supertitle('Satellites motion under Earth Gravitation');
+Earthplot([y2(1,:); y2(2,:); y2(3,:)],[y3(1,:);y3(2,:);y3(3,:)]);
 %% Getting the relative value of Deputy(chaser) Sat-2 wrt to Leader(Target) Sat-1 in Hills frame
 % and Plotting it 
 
 [r32h, v32h,r32l,v32l,C,Omega20] = getHills(y2, y3);
+
 figure(fig_no)%2
 fig_no=fig_no+1; 
-subplot2([r32h(1,:)' r32h(2,:)' r32h(3,:)' v32h(1,:)' v32h(2,:)' v32h(3,:)'],T1)
-
-figure(fig_no)%3
-fig_no=fig_no+1; 
-Earthplot([y2(:,1), y2(:,2), y2(:,3)],Ro20,[y2(:,1)+r32l(1,:)' y2(:,2)+ r32l(2,:)' y2(:,3)+ r32l(3,:)'],Ro30);
+supertitle("Chaser State Vector in Hills Frame");
+subplot2([r32h(1,:); r32h(2,:); r32h(3,:); v32h(1,:); v32h(2,:) ;v32h(3,:)],T2)
 %% Getting Relative Positions and W using Linearised HCW equations
 
-[L_HCW,tt]=Linear_HCW(initial32,t,y2,C,Omega20);
+[L_HCW,tt,sv32o]=Linear_HCW(initial32,t,C,Omega20,y2);
 
 % Plotting the linear Simulation 
 figure(fig_no)%4
 fig_no=fig_no+1; 
-subplot2([L_HCW(:,1) L_HCW(:,2) L_HCW(:,3) L_HCW(:,4) L_HCW(:,5) L_HCW(:,6)],tt)
+supertitle('Relative State Vector in Interial Frame');
+subplot2([L_HCW(1,:); L_HCW(2,:); L_HCW(3,:); L_HCW(4,:); L_HCW(5,:); L_HCW(6,:)],tt)
 
 figure(fig_no)%5
 fig_no=fig_no+1; 
-Earthplot([y2(:,1) y2(:,2) y2(:,3)],Ro20,[y2(:,1)+L_HCW(:,1) y2(:,2)+L_HCW(:,2) y2(:,3)+L_HCW(:,3)],Ro30);
-
+supertitle('Satellite Simulation');
+Earthplot([y2(1,:); y2(2,:) ;y2(3,:)],[y2(1,:)+sv32o(1,:) ;y2(2,:)+sv32o(2,:) ;y2(3,:)+sv32o(3,:)]);
 %% Getting Relative Positions and W using Non Linear Non Pertubated HCW equations
-[~,NL_HCW]=rkf4(@(ti,y)Nonlinear_HCW(ti,y2,t,Omega20),[t0,t(end)],initial32,step_time);
+[~,NL_HCW]=rkf4(@(ti,sv)Nonlinear_HCW(ti,sv,y2,t,Omega20),[t0,t(end)],initial32,step_time);
 
 for k=1:length(NL_HCW)
- NL_HCW(k,1:3)=(C(:,:,k))\NL_HCW(k,1:3)';
- NL_HCW(k,4:6)=(C(:,:,k))\(NL_HCW(k,4:6)-cross(NL_HCW(k,1:3),Omega20(k,:)'))';
+  NL_HCW(1:3,k)=(C(:,:,k))\NL_HCW(1:3,k);
+ NL_HCW(4:6,k)=(C(:,:,k))\(NL_HCW(4:6,k)-cross(NL_HCW(1:3,k),Omega20(1:3,k)));
 end
 % In place of Nonlinear_HCW function nonlinear_HCW_matrix_diff_equ can be
 % used.
 % Plotting the Non-linear Simulation 
 figure(fig_no)%6
 fig_no=fig_no+1; 
-subplot2([NL_HCW(:,1) NL_HCW(:,2) NL_HCW(:,3) NL_HCW(:,4) NL_HCW(:,5) NL_HCW(:,6)],t)
+supertitle('Relative State Vector in Interial Frame');
+subplot2([NL_HCW(1,:); NL_HCW(2,:); NL_HCW(3,:); NL_HCW(4,:); NL_HCW(5,:); NL_HCW(6,:)],t)
 
 figure(fig_no)%7
 fig_no=fig_no+1; 
-Earthplot([y2(:,1) y2(:,2) y2(:,3)],Ro20,[y2(:,1)+NL_HCW(:,1) y2(:,2)+NL_HCW(:,2) y2(:,3)+NL_HCW(:,3)],Ro30);
-
+supertitle('Satellite Simulation');
+Earthplot([y2(1,:); y2(2,:); y2(3,:)],[y2(1,:)+NL_HCW(1,:) ;y2(2,:)+NL_HCW(2,:) ;y2(3,:)+NL_HCW(3,:)]);
+%{
 %% Applying Lqr Control Technique to LHCW equations with constant Omega of Target Sattelite 
 [lqr_LHCW_n,t_lqr_nLHCW]=lqr_lhcw_const_N(initial32,t,n);
 
@@ -169,7 +150,7 @@ subplot2(lqr_LHCW_n,t_lqr_nLHCW');
 
 figure(fig_no)%9
 fig_no=fig_no+1; 
-Earthplot([y2(:,1), y2(:,2), y2(:,3)],Ro20,[y2(:,1)+lqr_LHCW_n(1,:) y2(:,2)+ lqr_LHCW_n(2,:) y2(:,3)+ lqr_LHCW_n(3,:)],Ro30);
+Earthplot([y2(:,1), y2(:,2), y2(:,3)],Ro20,[y2(:,1)+lqr_LHCW_n(:,1) y2(:,2)+ lqr_LHCW_n(:,2) y2(:,3)+ lqr_LHCW_n(:,3)],Ro30);
 
 %% Applying Control Techniques to LInear LTV(w is varying)(HCW Equations) System.
 Q=0.1*(eye(6));
@@ -183,7 +164,7 @@ subplot2([lqr_LHCW(:,1) lqr_LHCW(:,2) lqr_LHCW(:,3) lqr_LHCW(:,4) lqr_LHCW(:,5) 
 
 figure(fig_no)%11
 fig_no=fig_no+1; 
-Earthplot([y2(:,1), y2(:,2), y2(:,3)],Ro20,[y2(:,1)+lqr_LHCW(1,:) y2(:,2)+ lqr_LHCW(2,:) y2(:,3)+ lqr_LHCW(3,:)],Ro30);
+Earthplot([y2(:,1), y2(:,2), y2(:,3)],Ro20,[y2(:,1)+lqr_LHCW(:,1) y2(:,2)+ lqr_LHCW(:,2) y2(:,3)+ lqr_LHCW(:,3)],Ro30);
 
 %% Applying PID Using Autotuning control Technique to Linear LTV(w is varying )(HCW equations) System.
 % Kp=2;
@@ -212,3 +193,4 @@ figure(fig_no)%6
 fig_no=fig_no+1; 
 subplot2([pid_LHCW(:,1) pid_LHCW(:,2) pid_LHCW(:,3) pid_LHCW(:,4) pid_LHCW(:,5) pid_LHCW(:,6)],t)
 
+%}

@@ -1,6 +1,6 @@
-function [df]=Nonlinear_HCW(ti,f,tspan,Omega20)
+function [df]=Nonlinear_HCW(ti,sv,f,tspan,Omega20)
 global mu ;
-f=interp1(tspan,f,ti);
+f=interp1(tspan,f',ti);
 x=f(1);
 y=f(2);
 z=f(3);
@@ -8,15 +8,12 @@ Vx=f(4);
 Vy=f(5);
 Vz=f(6);
 
-r20=[x y z]';
-v20=[Vx Vy Vz]';
-
 rt=norm([x y z]);
 Omega20o= (cross([x y z],[Vx Vy Vz])/rt^2);
 Omega20=norm(Omega20o);
 
 % Omega20=(mu/(rt^3))^0.5;
-rc=norm([rt+x y z]);
+rc=norm([rt+sv(1) sv(2) sv(3)]);
 
 % alpha=cross(r20,a20)/r^2;
 alpha=-2*Vx*Omega20/rt;

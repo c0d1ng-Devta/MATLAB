@@ -1,18 +1,22 @@
-global J1 J2 J3 q1c q2c q3c q4c k c1 c2 c3 ue1 ue2 ue3 w1c w2c w3c;
+%%
 clc;
+clear;
+% close all;
 
-% Time
+global J1 J2 J3 q1c q2c q3c q4c k c1 c2 c3 ue1 ue2 ue3 w1c w2c w3c;
+
+%% Time and other Constants
 t=0:.5:500;
 % Moments of Inertia
 J1=16;
 J2=16;
 J3=16;
-
 % Controller Constants
 k=1;
 c1=4;
 c2=4;
 c3=4;
+%%
 % Initial Quaternions
 q1=-0.4;
 q2=0.2;
